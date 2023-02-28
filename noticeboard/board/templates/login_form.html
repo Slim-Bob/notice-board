@@ -1,0 +1,8 @@
+<form class="form-inline my-2 my-lg-0" method="post" action="{% url 'login' %}?next={{ request.path }}">
+    {% csrf_token %}
+    <input class="form-control mr-sm-2" type="text" name="username" placeholder="Username" aria-label="Username">
+    <input class="form-control mr-sm-2" type="password" name="password" placeholder="Password" aria-label="Password">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+    <input type="hidden" name="next" value="{{ next }}"/>
+    {#<a href="{% url 'register' %}">Register</a>#}
+</form>

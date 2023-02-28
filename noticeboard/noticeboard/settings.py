@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'board.context_processors.next_url',
             ],
         },
     },
@@ -126,4 +127,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = "/board"
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
