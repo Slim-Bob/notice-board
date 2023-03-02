@@ -8,5 +8,5 @@
         <input type="submit" value="login"/>
         <input type="hidden" name="next" value="{{ next }}"/>
     </form>
-   {#<a href="{% url 'register' %}">Register</a>#}
+   <a href="{% url 'signup' %}?next={{ next }}">Register</a>
 {% endif %}

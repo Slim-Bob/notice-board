@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'board/css/style.css' %}">
+
+{% load custom_tags %}
+
+{% block title %}
+Объявления
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="get">
+    {{ filterset.form.as_p }}
+    <input type="submit" value="Найти"/>
+</form>
+
+<h1>Объявления:</h1>
+{% for ad in ads %}
+<div>
+    <h2>{{ ad.title }}</h2>
+    <div>
+        <p><span>{{ ad.category }}: {{ ad.author.username }} {{ ad.created|date:"d-m-Y" }}</span></p>
+    </div>
+    <p>{{ ad.body|truncatewords:20|safe }}</p>
+    <p><span>Количество откликов: {{ ad.responses.count }}</span></p>
+    <a href="{% url 'ad_detail' ad.slug %}">Просмотреть</a>
+
+    {% if request.user == ad.author %}
+    | <a href="{% url 'ad_edit' ad.slug %}">Изменить</a>
+    {% elif request.user.is_authenticated %}
+    <br>
+    <button class="btn" onclick="toggleForm({{ ad.id }})">Respond</button>
+
+    <div id="form-{{ ad.id }}" class="hidden">
+        {% for resp in ad.resp %}
+        <div>
+            <p><span>({{ resp.get_status_display }}) {{ resp.body }}</span></p>
+        </div>
+        {% empty %}
+        {% endfor %}
+        <br>
+        <form method="post" action="{% url 'add_response' ad.id %}?next={% current_url %}">
+            {% csrf_token %}
+            <textarea name="body" rows="5" required></textarea>
+            <br>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+    {% endif %}
+
+    <br>
+</div>
+{% empty %}
+<p>Нет объявлений =(</p>
+{% endfor %}
+
+<br>
+
+<div class="div-page-ad">
+    {% if page_obj.has_previous %}
+    <a href="?{% url_replace page=1 %}">1</a>
+    {% if page_obj.previous_page_number != 1 %}
+    ...
+    <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+    {% endif %}
+
+    {{ page_obj.number }}
+
+    {% if page_obj.has_next %}
+    <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+    {% if paginator.num_pages != page_obj.next_page_number %}
+    ...
+    <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+    {% endif %}
+    {% endif %}
+</div>
+
+<script>
+    function toggleForm(adId) {
+      var form = document.getElementById('form-' + adId);
+      form.classList.toggle('hidden');
+    }
+
+</script>
+
+{% endblock %}

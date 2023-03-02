@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('board/', include('board.urls')),
+    # path('ckeditor/', include('ckeditor_uploader.urls')),
+    # path('tinymce/', include('tinymce.urls')),
+    #path('tinymce/upload/', csrf_exempt(tinymce_views.TinyMCEUploadView.as_view()), name='tinymce_upload'),
     #path('accounts/', include('django.contrib.auth.urls')),
-]
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

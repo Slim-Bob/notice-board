@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    На объявление "<a href="{% url 'ad_detail' ad.slug %}">{{ ad.title }}</a>" пришел отклик.
+    <p>
+        {{ resp.body }}
+    <br>
+        {{ resp.author }}
+    </p>
+    <br>
+    Вы можите
+    <a href="{% url 'confirmed_response' resp.id %}">Подтвердить</a>
+    или <a href="{% url 'rejected_response' resp.id %}">Отклонить</a>
+</body>
+</html>

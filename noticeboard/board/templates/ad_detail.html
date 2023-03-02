@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+<h1>
+    {{ ad.title }}
+</h1>
+
+<p>Категория: {{ ad.category }}</p>
+<p>Статус: {{ ad.get_status_display }}</p>
+<p>Автор: {{ ad.author }}</p>
+<p>Дата создания: {{ ad.created }}</p>
+
+<p>{{ ad.body|safe }}</p>
+<br>
+{% if request.user.is_authenticated %}
+
+    {% if request.user == ad.author %}
+        <a href="{% url 'ad_edit' ad.slug %}">Изменить</a>
+        <br>
+
+        <br>
+        <button class="btn" onclick="toggleFormA({{ ad.id }})">Respond</button>
+
+            <div id="form_a-{{ ad.id }}" class="hidden">
+                {% for r in resp %}
+                <div>
+                    <tr>
+                        <td>{{ r.author }}</td>
+                        <td>{{ r.body }}</td>
+                        {% if r.check_status and ad.check_status %}
+                            <td><a href="{% url 'confirmed_response' r.id %}?next={{ request.get_full_path }}">Подтвердить</a></td>
+                            <td><a href="{% url 'rejected_response' r.id %}?next={{ request.get_full_path }}">Отклонить</a></td>
+                        {% else %}
+                            <td>{{ r.get_status_display }}</td>
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                </div>
+                {% endfor %}
+                </div>
+
+    {% else %}
+    <button class="btn" onclick="toggleForm({{ ad.id }})">Respond</button>
+
+    <div id="form-{{ ad.id }}" class="hidden">
+        {% for r in resp %}
+        <div>
+            <p><span>({{ r.get_status_display }}) {{ r.body }}</span></p>
+        </div>
+        {% endfor %}
+        <br>
+        <form method="post" action="{% url 'add_response' ad.id %}?next={{ request.get_full_path }}">
+            {% csrf_token %}
+            <textarea name="body" rows="5" required></textarea>
+            <br>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+    {% endif %}
+
+
+{% else %}
+    <p>Оставлять отклики могут только авторизованные пользователи</p>
+{% endif %}
+
+<script>
+    function toggleForm(adId) {
+      var form = document.getElementById('form-' + adId);
+      form.classList.toggle('hidden');
+    }
+
+    function toggleFormA(adId) {
+      var form = document.getElementById('form_a-' + adId);
+      form.classList.toggle('hidden');
+    }
+
+
+</script>
+
+{% endblock %}

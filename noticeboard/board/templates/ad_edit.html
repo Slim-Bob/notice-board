@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Изменение объявления
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.media}}
+            {{ form.as_p }}
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
     Send email
 {% endblock %}
@@ -9,5 +11,10 @@
         {{ form.as_p }}
         <button type="submit">Отправить</button>
     </form>
+
+    <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+    <script>
+        CKEDITOR.replace('id_content');
+    </script>
 {% endblock %}
 
